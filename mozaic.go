@@ -33,7 +33,8 @@ func New(fingerprint []byte, hash func() hash.Hash) Mozaic {
 	return buf
 }
 
-func (m Mozaic) ANSI256() (output string) {
+// ANSI will provide the Hash Visualisation as ANSI escape codes
+func (m Mozaic) ANSI() (output string) {
 	lm := len(m)
 	// rowWidth := lm / 8
 	rows := lm / 4
