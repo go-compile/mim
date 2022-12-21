@@ -2,13 +2,35 @@ package mim
 
 import (
 	"fmt"
+	"hash"
+
+	"golang.org/x/crypto/hkdf"
 )
 
+// Mozaic is a Hash Visualisation inspired by randoart.
 type Mozaic []byte
 
-// New creates a new Mozaic which can then be converted to ANSI or a image
-func New(fingerprint []byte) Mozaic {
-	return fingerprint
+// New creates a new Mozaic which can then be converted to ANSI or a image.
+//
+// A cryptographic hash function such as SHA256 or SHA512 needs to be provided.
+// Via the use of a CHF the hash visualisation becomes pre-image resistant.
+// Furthermore, the image output becomes fixed regardless of input, however
+// based on the user's security model a 256bit CHF can be changed for a 512 CHF.
+//
+// It is recommended to ONLY use SHA256. This allows MIM to be standardised across
+// programs.
+//
+// Recognised MIM configurations:
+//
+// MIM_SHA256, MIM_SHA512
+func New(fingerprint []byte, hash func() hash.Hash) Mozaic {
+
+	kdf := hkdf.New(hash, fingerprint, nil, nil)
+
+	buf := make([]byte, hash().Size())
+	kdf.Read(buf)
+
+	return buf
 }
 
 func (m Mozaic) ANSI256() (output string) {
