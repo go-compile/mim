@@ -53,7 +53,15 @@ func (m Mozaic) ANSI() (output string) {
 	return output + "\x1b[0m"
 }
 
-func (m Mozaic) ANSITrueColour() (output string) {
+// DeprecatedANSITrueColour uses TrueColour RGB to print a short bar.
+// DO NOT USE IF SECURITY IS IMPORTANT!
+//
+// Due to the sRGB colour space, an attacker may find it easier to forge a
+// similar looking Mozaic. This is because the bytes for each coloured
+// square can be slightly off and our human eye will struggle to notice a
+// difference. Furthermore, the colour differences from monitor to monitor
+// may skew the colours, resulting in false positives or false negatives.
+func (m Mozaic) DeprecatedANSITrueColour() (output string) {
 	// pre-computed length of m
 	lm := len(m)
 
