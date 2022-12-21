@@ -38,14 +38,19 @@ mainloop:
 	for i := 0; i < lm; i += 3 {
 
 		// if there are less than 3 bytes left
-		if x := lm - i; x < 3 {
+		if x := (lm - 1) - i; x < 3 {
+			if x == 0 {
+				break mainloop
+			}
+
 			switch x {
 			case 1:
 				output += colourANSITrueColour(m[i], 0, 0) + "  "
 			default:
 				output += colourANSITrueColour(m[i], m[i+1], 0) + "  "
-				break mainloop
 			}
+
+			break mainloop
 		}
 
 		output += colourANSITrueColour(m[i], m[i+1], m[i+2]) + "  "
