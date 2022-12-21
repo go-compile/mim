@@ -11,15 +11,9 @@ import (
 func main() {
 	fingerprint := sha256.Sum256([]byte("certificate contents would typically go here"))
 
-	fmt.Println(mim.New(fingerprint[:]).ANSI256())
+	fmt.Println(mim.New(fingerprint[:], sha256.New).ANSI256())
 
 	fmt.Println()
 
-	sha512Mozaic()
-}
-
-func sha512Mozaic() {
-	fingerprint := sha512.Sum512([]byte("certificate contents would typically go here"))
-
-	fmt.Println(mim.New(fingerprint[:]).ANSI256())
+	fmt.Println(mim.New(fingerprint[:], sha512.New).ANSI256())
 }
