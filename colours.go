@@ -23,3 +23,47 @@ var colour = [][3]byte{
 	{20, 240, 240},  // Bright Cyan
 	{233, 235, 235}, // Bright Whites
 }
+
+// splitUint8 is used to split a uint8 into two "uint4"s.
+//
+// The variable is corrected at initiation time if the current system is
+// not Little Endian.
+//
+// Finding out the system's byte order is important as it allows for
+// a byte to be split correctly and output the appropriate int >= 16.
+// If the wrong byte order was used, ints could return bigger than 16,
+// thus breaking our colour codes.
+var splitUint8 func(b byte) (byte, byte) = expandLittleEndian
+
+func init() {
+	if bigEndianByteOrder() {
+		splitUint8 = expandBigEndian
+		return
+	}
+
+}
+
+// expandBigEndian takes one uint8 and expands it into
+// two "uint4"
+func expandBigEndian(b byte) (byte, byte) {
+	// bit shift 4 bits to the right
+	left := b >> 4
+	// bit shift 4 to the left giving us the last 4 bits
+	// then move back 4 bytes to become Big Endian format
+	right := (b << 4) >> 4
+
+	return left, right
+}
+
+// expandLittleEndian takes one uint8 and expands it into
+// two "uint4"
+func expandLittleEndian(b byte) (byte, byte) {
+	// bit shift 4 bits to the right then back to clear
+	// the right most 4 bits
+	left := (b >> 4) << 4
+	// bit shift 4 to the left giving us the last 4 bits
+	// in Little Endian format
+	right := b << 4
+
+	return left, right
+}
