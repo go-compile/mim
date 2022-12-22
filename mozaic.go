@@ -35,6 +35,7 @@ func New(fingerprint []byte, hash func() hash.Hash) Mozaic {
 
 // ANSI will provide the Hash Visualisation as ANSI escape codes
 func (m Mozaic) ANSI() (output string) {
+	fmt.Println(bigEndianByteOrder())
 	lm := len(m)
 	// rowWidth := lm / 8
 	rows := lm / 4
@@ -98,4 +99,19 @@ func colourANSI256(d byte) string {
 // colourANSITrueColour takes three bytes and returns a RGB ANSI colour code
 func colourANSITrueColour(r, g, b byte) string {
 	return fmt.Sprintf("\x1b[38;2;%d;%d;%d;48;2;%d;%d;%dm", r, g, b, r, g, b)
+}
+
+// bigEndianByteOrder returns true if the system is using Big Endian byte order
+func bigEndianByteOrder() bool {
+	// set either: 00000001 or 10000000
+	n := byte(1)
+
+	// shift n 7 bits to the right.
+	// if Big Endian 00000001 >> 7 = 00000000
+	//
+	// if Little Endian 10000000 >> 7 = 00000001
+	//
+	// if big endian a bit shift by 7 on value 1 will always
+	// return 0
+	return n>>7 == 0
 }
