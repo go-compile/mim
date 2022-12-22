@@ -35,7 +35,6 @@ func New(fingerprint []byte, hash func() hash.Hash) Mozaic {
 
 // ANSI will provide the Hash Visualisation as ANSI escape codes
 func (m Mozaic) ANSI() (output string) {
-	fmt.Println(bigEndianByteOrder())
 	lm := len(m)
 	// rowWidth := lm / 8
 	rows := lm / 4
@@ -43,12 +42,14 @@ func (m Mozaic) ANSI() (output string) {
 	for i := 0; i < lm; i++ {
 		if i%rows == 0 && i != 0 {
 			output += "\r\n"
-		} else if i%4 == 3 && i != 0 { // per row, every fourth byte add space and create parallel square
-			output += colourANSI256(m[i]) + "  \x1b[0m  "
+		} else if i%2 == 1 && i != 0 { // per row, every fourth byte add space and create parallel square
+			l, r := colourANSI(m[i])
+			output += l + "  " + r + "  \x1b[0m  "
 			continue
 		}
 
-		output += colourANSI256(m[i]) + "  \x1b[0m"
+		l, r := colourANSI(m[i])
+		output += l + "  " + r + "  \x1b[0m"
 	}
 
 	return output + "\x1b[0m"
@@ -77,15 +78,15 @@ mainloop:
 
 			switch x {
 			case 1:
-				output += colourANSITrueColour(m[i], 0, 0) + "  "
+				output += colourANSITrueColour([3]byte{m[i], 0, 0}) + "  "
 			default:
-				output += colourANSITrueColour(m[i], m[i+1], 0) + "  "
+				output += colourANSITrueColour([3]byte{m[i], m[i+1], 0}) + "  "
 			}
 
 			break mainloop
 		}
 
-		output += colourANSITrueColour(m[i], m[i+1], m[i+2]) + "  "
+		output += colourANSITrueColour([3]byte{m[i], m[i+1], m[i+2]}) + "  "
 	}
 
 	return output + "\x1b[0m"
@@ -96,9 +97,16 @@ func colourANSI256(d byte) string {
 	return fmt.Sprintf("\x1b[48;5;%dm", d)
 }
 
+// colourANSI takes a byte and returns multiple 8bit colour escape codes
+func colourANSI(b byte) (string, string) {
+	left, right := splitUint8(b)
+	return colourANSITrueColour(colour[left]), colourANSITrueColour(colour[right])
+}
+
 // colourANSITrueColour takes three bytes and returns a RGB ANSI colour code
-func colourANSITrueColour(r, g, b byte) string {
-	return fmt.Sprintf("\x1b[38;2;%d;%d;%d;48;2;%d;%d;%dm", r, g, b, r, g, b)
+func colourANSITrueColour(rgb [3]byte) string {
+	// TODO: replace fmt with strconv
+	return fmt.Sprintf("\x1b[38;2;%d;%d;%d;48;2;%d;%d;%dm", rgb[0], rgb[1], rgb[2], rgb[0], rgb[1], rgb[2])
 }
 
 // bigEndianByteOrder returns true if the system is using Big Endian byte order
