@@ -20,7 +20,7 @@ const (
 // SVG will produce a SVG mozaic the size of 380 by 80px
 func (m Mozaic) SVG(w io.Writer) {
 	s := gensvg.New(w)
-	s.Start(CanvasHeight, CanvasHeight)
+	s.Start(CanvasWidth, CanvasHeight)
 
 	m.Render(func(x, y float64, colour [3]byte) {
 		s.Square(x, y, 20, "fill: "+rgbToHEX(colour))
