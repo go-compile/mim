@@ -129,7 +129,6 @@ func bigEndianByteOrder() bool {
 	return n>>7 == 0
 }
 
-// TODO: add SVG output
 // TODO: add PNG output
 // TODO: add JPG output
 // TODO: add HTML output
