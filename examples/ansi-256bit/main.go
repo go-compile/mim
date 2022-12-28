@@ -2,7 +2,6 @@ package main
 
 import (
 	"crypto/sha256"
-	"crypto/sha512"
 	"fmt"
 
 	"github.com/go-compile/mim"
@@ -13,8 +12,4 @@ func main() {
 
 	fmt.Printf("Fingerprint: %X\n\n", fingerprint)
 	fmt.Println(mim.New(fingerprint[:], sha256.New).ANSI())
-
-	fmt.Println()
-
-	fmt.Println(mim.New(fingerprint[:], sha512.New).ANSI())
 }

@@ -15,8 +15,7 @@ type Mozaic []byte
 //
 // A cryptographic hash function such as SHA256 or SHA512 needs to be provided.
 // Via the use of a CHF the hash visualisation becomes pre-image resistant.
-// Furthermore, the image output becomes fixed regardless of input, however
-// based on the user's security model a 256bit CHF can be changed for a 512 CHF.
+// Furthermore, the image output becomes fixed regardless of input at 64 bytes
 //
 // It is recommended to ONLY use SHA256. This allows MIM to be standardised across
 // programs.
@@ -28,7 +27,8 @@ func New(fingerprint []byte, hash func() hash.Hash) Mozaic {
 
 	kdf := hkdf.New(hash, fingerprint, nil, nil)
 
-	buf := make([]byte, hash().Size())
+	// 256bit buffer
+	buf := make([]byte, 32)
 	kdf.Read(buf)
 
 	return buf
