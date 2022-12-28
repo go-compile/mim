@@ -10,6 +10,7 @@ MIM is a Hash Visualization format utilising 4x4 colour matrixes. This provides 
 - Collision Resistant
 - Fast & Efficient
 - Customisable CHF
+- Identical Colours Cross Platform
 
 ## Output
 
