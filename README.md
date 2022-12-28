@@ -14,7 +14,7 @@ MIM is a Hash Visualization format utilising 4x4 colour matrixes. This provides 
 
 ## Output
 
-MIM outputs coloured ANSI escape codes.
+MIM outputs coloured **ANSI escape codes** or **SVGs**.
 
 ![MIM Mozaic output](./.github/images/mim2.png)
 
