@@ -3,6 +3,7 @@ package mim
 import (
 	"fmt"
 	"hash"
+	"strconv"
 
 	"golang.org/x/crypto/hkdf"
 )
@@ -105,8 +106,12 @@ func colourANSI(b byte) (string, string) {
 
 // colourANSITrueColour takes three bytes and returns a RGB ANSI colour code
 func colourANSITrueColour(rgb [3]byte) string {
-	// TODO: replace fmt with strconv
-	return fmt.Sprintf("\x1b[38;2;%d;%d;%d;48;2;%d;%d;%dm", rgb[0], rgb[1], rgb[2], rgb[0], rgb[1], rgb[2])
+	r := strconv.Itoa(int(rgb[0]))
+	g := strconv.Itoa(int(rgb[1]))
+	b := strconv.Itoa(int(rgb[2]))
+
+	// changed from printf to use strconv for performance
+	return "\x1b[38;2;" + r + ";" + g + ";" + b + ";48;2;" + r + ";" + g + ";" + b + "m"
 }
 
 // bigEndianByteOrder returns true if the system is using Big Endian byte order
